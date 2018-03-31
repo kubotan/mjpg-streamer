@@ -24,8 +24,10 @@ systemctl start mjpg-streamer2  # 手動起動テスト
 ```
 
 #以下でmjpgストリーミングの確認可能
+```
 http://XXX.XXX.XXX.XXX:8080/?action=stream
 2台目はhttp://XXX.XXX.XXX.XXX:8081/?action=stream
+```
 
 # ナレッジ
 ```
