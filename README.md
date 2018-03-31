@@ -1,48 +1,56 @@
-ƒRƒ“ƒpƒNƒg”Åmjpg-streamer
+ã‚³ãƒ³ãƒ‘ã‚¯ãƒˆç‰ˆmjpg-streamer
 
 # make
+```
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh make.sh
+```
 
-#1‘äŽ©“®‹N“®‚Ìê‡‚ÍˆÈ‰º‚ðŽÀs
+#1å°è‡ªå‹•èµ·å‹•ã®å ´åˆã¯ä»¥ä¸‹ã‚’å®Ÿè¡Œ
+```
 sh setup.sh
-systemctl stop mjpg-streamer  # Žè“®I—¹ƒeƒXƒg
-systemctl start mjpg-streamer  # Žè“®‹N“®ƒeƒXƒg
+systemctl stop mjpg-streamer  # æ‰‹å‹•çµ‚äº†ãƒ†ã‚¹ãƒˆ
+systemctl start mjpg-streamer  # æ‰‹å‹•èµ·å‹•ãƒ†ã‚¹ãƒˆ
+```
 
-#2‘äŽ©“®‹N“®‚Ìê‡‚ÍˆÈ‰º‚ðŽÀs
+#2å°è‡ªå‹•èµ·å‹•ã®å ´åˆã¯ä»¥ä¸‹ã‚’å®Ÿè¡Œ
+```
 sh setup2.sh
-systemctl stop mjpg-streamer1  # Žè“®I—¹ƒeƒXƒg
-systemctl start mjpg-streamer1  # Žè“®‹N“®ƒeƒXƒg
-systemctl stop mjpg-streamer2  # Žè“®I—¹ƒeƒXƒg
-systemctl start mjpg-streamer2  # Žè“®‹N“®ƒeƒXƒg
+systemctl stop mjpg-streamer1  # æ‰‹å‹•çµ‚äº†ãƒ†ã‚¹ãƒˆ
+systemctl start mjpg-streamer1  # æ‰‹å‹•èµ·å‹•ãƒ†ã‚¹ãƒˆ
+systemctl stop mjpg-streamer2  # æ‰‹å‹•çµ‚äº†ãƒ†ã‚¹ãƒˆ
+systemctl start mjpg-streamer2  # æ‰‹å‹•èµ·å‹•ãƒ†ã‚¹ãƒˆ
+```
 
-ˆÈ‰º‚ÅmjpgƒXƒgƒŠ[ƒ~ƒ“ƒO‚ÌŠm”F‰Â”\
+#ä»¥ä¸‹ã§mjpgã‚¹ãƒˆãƒªãƒ¼ãƒŸãƒ³ã‚°ã®ç¢ºèªå¯èƒ½
 http://XXX.XXX.XXX.XXX:8080/?action=stream
+2å°ç›®ã¯http://XXX.XXX.XXX.XXX:8081/?action=stream
 
-2‘ä–Ú‚Íhttp://XXX.XXX.XXX.XXX:8081/?action=stream
-
-# ƒiƒŒƒbƒW
-USBÚ‘±Šm”F
+# ãƒŠãƒ¬ãƒƒã‚¸
+```
+USBæŽ¥ç¶šç¢ºèª
 lsusb 
-ƒc[ƒ‹‚ÌƒCƒ“ƒXƒg[ƒ‹
+ãƒ„ãƒ¼ãƒ«ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
 sudo apt-get install v4l-utils
-ƒfƒoƒCƒXî•ñ‚Ì•\Ž¦
+ãƒ‡ãƒã‚¤ã‚¹æƒ…å ±ã®è¡¨ç¤º
 v4l2-ctl -d /dev/video0 --info
-‚æ‚èÚ×‚Èî•ñ•\Ž¦
+ã‚ˆã‚Šè©³ç´°ãªæƒ…å ±è¡¨ç¤º
 v4l2-ctl -d /dev/video0 --all
-‘Î‰ž‚µ‚Ä‚¢‚é‰ð‘œ“x‚ÆƒtƒŒ[ƒ€ƒŒ[ƒgˆê——•\Ž¦
+å¯¾å¿œã—ã¦ã„ã‚‹è§£åƒåº¦ã¨ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆä¸€è¦§è¡¨ç¤º
 v4l2-ctl -d /dev/video0 --list-formats-ext
+```
 
-# raspbianŠÖ˜AƒiƒŒƒbƒW
-ƒ†[ƒU[–¼:pi
-ƒpƒXƒ[ƒh:raspberry
+# raspbiané–¢é€£ãƒŠãƒ¬ãƒƒã‚¸
+```
+ãƒ¦ãƒ¼ã‚¶ãƒ¼å:pi
+ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰:raspberry
 sudo su -
 raspi-config
-(SSHƒT[ƒrƒX‚ð—LŒø‚É‚·‚éBTimezone‚ðAsia/Tokyo‚ÉÝ’è‚·‚éBWi-Fi‚ðŽg‚¤ê‡‚Í‚±‚±‚Å—LŒø‚É‚·‚é‚ªfps‚ª‰º‚ª‚é‚Ì‚Å—Lü‚Æ‚µ‚½B)
+(SSHã‚µãƒ¼ãƒ“ã‚¹ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã€‚Timezoneã‚’Asia/Tokyoã«è¨­å®šã™ã‚‹ã€‚Wi-Fiã‚’ä½¿ã†å ´åˆã¯ã“ã“ã§æœ‰åŠ¹ã«ã™ã‚‹ãŒfpsãŒä¸‹ãŒã‚‹ã®ã§æœ‰ç·šã¨ã—ãŸã€‚)
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 vi /etc/dhcpcd.conf
-interface eth0(Wi-Fi‚ðŽg‚¤ê‡‚Íwlan0)
+interface eth0(Wi-Fiã‚’ä½¿ã†å ´åˆã¯wlan0)
 static ip_address=XXX.XXX.XXX.XXX/24
 static routers=XXX.XXX.XXX.XXX
 static domain_name_servers=XXX.XXX.XXX.XXX 8.8.8.8
@@ -50,3 +58,4 @@ static domain_name_servers=XXX.XXX.XXX.XXX 8.8.8.8
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
+```
