@@ -49,13 +49,17 @@ v4l2-ctl -d /dev/video0 --list-formats-ext
 パスワード:raspberry
 sudo su -
 raspi-config
-(SSHサービスを有効にする。TimezoneをAsia/Tokyoに設定する。Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
+  2 Network Options > N1 Hostname > OK > mjpg-streamer > OK
+  4 Localisation Options > I2 Change Timezone > Asia > OK > Tokyo > OK
+  5 Interfacing Options > P2 SSH > YES > OK
+  8 Update
+  (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 vi /etc/dhcpcd.conf
 interface eth0(Wi-Fiを使う場合はwlan0)
 static ip_address=XXX.XXX.XXX.XXX/24
 static routers=XXX.XXX.XXX.XXX
-static domain_name_servers=XXX.XXX.XXX.XXX 8.8.8.8
+static domain_name_servers=XXX.XXX.XXX.XXX XXX.XXX.XXX.XXX
 
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
