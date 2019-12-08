@@ -31,6 +31,11 @@ raspi-config
 
 # make
 ```
+ssh pi@XXX.XXX.XXX.XXX
+ユーザー名:pi
+パスワード:raspberry
+echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
+sudo su -
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh make.sh
