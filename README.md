@@ -71,6 +71,6 @@ v4l2-ctl -d /dev/video0 --list-formats-ext
 
 #USBカメラを1台自動起動の場合は以下を実行
 sh setup.sh
-systemctl stop mjpg-streamer  # 手動終了テスト
-systemctl start mjpg-streamer  # 手動起動テスト
+systemctl stop mjpg_streamer  # 手動終了テスト
+systemctl start mjpg_streamer  # 手動起動テスト
 ```
