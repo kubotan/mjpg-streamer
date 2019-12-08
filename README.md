@@ -24,6 +24,8 @@ ssh pi@XXX.XXX.XXX.XXX
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
+raspi-config
+  8 Update
 ```
 
 # make
