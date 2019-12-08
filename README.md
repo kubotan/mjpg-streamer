@@ -39,6 +39,7 @@ sudo su -
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh make.sh
+  Do you want to continue? [Y/n] Y
 ```
 
 #1台自動起動の場合は以下を実行
