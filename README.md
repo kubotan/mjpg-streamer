@@ -44,10 +44,10 @@ sh make.sh
 #USBカメラを2台自動起動の場合は以下を実行(1台の場合はページ最下部のナレッジ参照)
 ```
 sh setup2.sh
-systemctl stop mjpg-streamer1  # 手動終了テスト
-systemctl start mjpg-streamer1  # 手動起動テスト
-systemctl stop mjpg-streamer2  # 手動終了テスト
-systemctl start mjpg-streamer2  # 手動起動テスト
+systemctl stop mjpg_streamer1  # 手動終了テスト
+systemctl start mjpg_streamer1  # 手動起動テスト
+systemctl stop mjpg_streamer2  # 手動終了テスト
+systemctl start mjpg_streamer2  # 手動起動テスト
 ```
 
 #以下でmjpgストリーミングの確認可能
