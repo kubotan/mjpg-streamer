@@ -26,6 +26,7 @@ sudo su -
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 raspi-config
   8 Update > Select
+  Finish
 ```
 
 # make
