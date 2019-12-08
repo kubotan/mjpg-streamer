@@ -6,9 +6,9 @@
 パスワード:raspberry
 sudo su -
 raspi-config
-  2 Network Options > N1 Hostname > OK > mjpg-streamer > OK
-  4 Localisation Options > I2 Change Timezone > Asia > OK > Tokyo > OK
-  5 Interfacing Options > P2 SSH > YES > OK
+  2 Network Options > Select > N1 Hostname > OK > mjpg-streamer > OK
+  4 Localisation Options > Select > I2 Change Timezone > Asia > OK > Tokyo > OK
+  5 Interfacing Options > Select > P2 SSH > YES > OK
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 vi /etc/dhcpcd.conf
@@ -25,7 +25,7 @@ echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 raspi-config
-  8 Update
+  8 Update > Select
 ```
 
 # make
