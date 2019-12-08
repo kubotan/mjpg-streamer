@@ -16,7 +16,11 @@ interface eth0(Wi-Fiを使う場合はwlan0)
 static ip_address=XXX.XXX.XXX.XXX/24
 static routers=XXX.XXX.XXX.XXX
 static domain_name_servers=XXX.XXX.XXX.XXX XXX.XXX.XXX.XXX
+shutdown -h now
 
+ssh pi@XXX.XXX.XXX.XXX
+ユーザー名:pi
+パスワード:raspberry
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
