@@ -41,20 +41,13 @@ cd mjpg-streamer
 sh make.sh
   Do you want to continue? [Y/n] Y
 ```
-#USBカメラを2台自動起動の場合は以下を実行
+#USBカメラを2台自動起動の場合は以下を実行(1台の場合はページ最下部のナレッジ参照)
 ```
 sh setup2.sh
 systemctl stop mjpg-streamer1  # 手動終了テスト
 systemctl start mjpg-streamer1  # 手動起動テスト
 systemctl stop mjpg-streamer2  # 手動終了テスト
 systemctl start mjpg-streamer2  # 手動起動テスト
-```
-
-#USBカメラを1台自動起動の場合は以下を実行
-```
-#sh setup.sh
-#systemctl stop mjpg-streamer  # 手動終了テスト
-#systemctl start mjpg-streamer  # 手動起動テスト
 ```
 
 #以下でmjpgストリーミングの確認可能
@@ -65,14 +58,19 @@ http://XXX.XXX.XXX.XXX:8080/?action=stream
 
 # ナレッジ
 ```
-USB接続確認
+#USB接続確認
 lsusb 
-ツールのインストール
+#ツールのインストール
 sudo apt-get install v4l-utils
-デバイス情報の表示
+#デバイス情報の表示
 v4l2-ctl -d /dev/video0 --info
-より詳細な情報表示
+#より詳細な情報表示
 v4l2-ctl -d /dev/video0 --all
-対応している解像度とフレームレート一覧表示
+#対応している解像度とフレームレート一覧表示
 v4l2-ctl -d /dev/video0 --list-formats-ext
+
+#USBカメラを1台自動起動の場合は以下を実行
+sh setup.sh
+systemctl stop mjpg-streamer  # 手動終了テスト
+systemctl start mjpg-streamer  # 手動起動テスト
 ```
