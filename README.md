@@ -41,21 +41,20 @@ cd mjpg-streamer
 sh make.sh
   Do you want to continue? [Y/n] Y
 ```
-
-#1台自動起動の場合は以下を実行
-```
-sh setup.sh
-systemctl stop mjpg-streamer  # 手動終了テスト
-systemctl start mjpg-streamer  # 手動起動テスト
-```
-
-#2台自動起動の場合は以下を実行
+#USBカメラを2台自動起動の場合は以下を実行
 ```
 sh setup2.sh
 systemctl stop mjpg-streamer1  # 手動終了テスト
 systemctl start mjpg-streamer1  # 手動起動テスト
 systemctl stop mjpg-streamer2  # 手動終了テスト
 systemctl start mjpg-streamer2  # 手動起動テスト
+```
+
+#USBカメラを1台自動起動の場合は以下を実行
+```
+#sh setup.sh
+#systemctl stop mjpg-streamer  # 手動終了テスト
+#systemctl start mjpg-streamer  # 手動起動テスト
 ```
 
 #以下でmjpgストリーミングの確認可能
