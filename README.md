@@ -29,7 +29,7 @@ interface eth0(Wi-Fiを使う場合はwlan0)
 static ip_address=XXX.XXX.XXX.XXX/24
 static routers=XXX.XXX.XXX.XXX
 static domain_name_servers=XXX.XXX.XXX.XXX XXX.XXX.XXX.XXX
-shutdown -h now
+reboot
 
 ssh pi@XXX.XXX.XXX.XXX
 ユーザー名:pi
@@ -38,6 +38,7 @@ sudo su -
 raspi-config
   8 Update > Select
   Finish
+reboot
 ```
 
 # セットアップ
