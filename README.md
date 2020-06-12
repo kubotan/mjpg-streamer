@@ -39,16 +39,7 @@ echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
-sh make.sh
-  Do you want to continue? [Y/n] Y
-```
-#USBカメラを2台自動起動の場合は以下を実行(1台の場合はページ最下部のナレッジ参照)
-```
-sh setup2.sh
-systemctl stop mjpg_streamer1  # 手動終了テスト
-systemctl start mjpg_streamer1  # 手動起動テスト
-systemctl stop mjpg_streamer2  # 手動終了テスト
-systemctl start mjpg_streamer2  # 手動起動テスト
+sh setup.sh   # 2台セットアップになってます。1台にする場合はechoから始まる行で8081ポートの方を行削除してみてください。
 ```
 
 #以下でmjpgストリーミングの確認可能
@@ -69,9 +60,4 @@ v4l2-ctl -d /dev/video0 --info
 v4l2-ctl -d /dev/video0 --all
 #対応している解像度とフレームレート一覧表示
 v4l2-ctl -d /dev/video0 --list-formats-ext
-
-#USBカメラを1台自動起動の場合は以下を実行
-sh setup.sh
-systemctl stop mjpg_streamer  # 手動終了テスト
-systemctl start mjpg_streamer  # 手動起動テスト
 ```
