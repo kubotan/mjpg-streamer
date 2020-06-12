@@ -25,8 +25,6 @@ install:
 	make -C _build install
 	
 clean:
-	[ ! -f _build/Makefile ] || make -C _build clean
-	rm -f mjpg_streamer *.so
-
-distclean: clean
+	rm -f mjpg_streamer
+	rm -f *.so
 	rm -rf _build
