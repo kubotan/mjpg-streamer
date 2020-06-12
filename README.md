@@ -74,4 +74,25 @@ v4l2-ctl -d /dev/video0 --info
 v4l2-ctl -d /dev/video0 --all
 #対応している解像度とフレームレート一覧表示
 v4l2-ctl -d /dev/video0 --list-formats-ext
+#オプション
+ ./mjpg_streamer -i "input_uvc.so --help"
+ ./mjpg_streamer -o "output_http.so --help"
+ 
+ オプション
+ -b バックグラウンドで起動
+ -i 入力修飾子を指定
+   -d デバイス
+   -r 解像度(QSIF/QCIF/CGA/QVGA/CIF/VGA/SVGA/XGA/SXGA or 横幅x縦幅)
+   -f fps
+   -y YUYVフォーマットを指定するか否か
+   -q JPEGのクオリティ(1-100)
+   -m 最小サイズ。ゴミフレーム除外用
+   -n dynctrlsを初期化しない
+   -l LEDの状態。(on/off/blink/auto)
+ 
+ -o 出力修飾子を指定
+   -p ポート
+   -w ウェブコンテンツのあるディレクトリ
+   -c 認証情報。ユーザ名:パスワードで指定
+   -n デモページのControlコマンド無効化
 ```
