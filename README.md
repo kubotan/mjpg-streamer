@@ -51,12 +51,13 @@ apt-get install git
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh setup.sh   # 1台セットアップになってます。2台にする場合はコメントアウトされたecho行を有効化してください。
+reboot
 ```
 
 #以下でmjpgストリーミングの確認可能
 ```
-http://XXX.XXX.XXX.XXX:8080/?action=stream
-2台目はhttp://XXX.XXX.XXX.XXX:8081/?action=stream
+http://mjpg-streamer.local:8080/?action=stream
+2台目はhttp://mjpg-streamer.local:8081/?action=stream
 ```
 
 # ナレッジ
