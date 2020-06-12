@@ -49,7 +49,7 @@ ssh pi@XXX.XXX.XXX.XXX
 sudo su -
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
-sh setup.sh   # 2台セットアップになってます。1台にする場合はechoから始まる行で8081ポートの方を行削除してみてください。
+sh setup.sh   # 1台セットアップになってます。2台にする場合はコメントアウトされたecho行を有効化してください。
 ```
 
 #以下でmjpgストリーミングの確認可能
