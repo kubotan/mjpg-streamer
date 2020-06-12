@@ -8,7 +8,13 @@ Fork of http://sourceforge.net/projects/mjpg-streamer/
 ```
 ユーザー名:pi
 パスワード:raspberry
+echo "set nocompatible" >> ~/.vimrc
+echo "set backspace=indent,eol,start" >> ~/.vimrc
+echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
+echo "set nocompatible" >> ~/.vimrc
+echo "set backspace=indent,eol,start" >> ~/.vimrc
+echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 raspi-config
   2 Network Options > Select > N1 Hostname > Select > mjpg-streamer > OK
   2 Network Options > Select > N2 Wireless LAN > Select > JP Japan > OK > OK > (SSID) > OK > (Passphrase) > OK
@@ -26,13 +32,7 @@ shutdown -h now
 ssh pi@XXX.XXX.XXX.XXX
 ユーザー名:pi
 パスワード:raspberry
-echo "set nocompatible" >> ~/.vimrc
-echo "set backspace=indent,eol,start" >> ~/.vimrc
-echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
-echo "set nocompatible" >> ~/.vimrc
-echo "set backspace=indent,eol,start" >> ~/.vimrc
-echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 raspi-config
   8 Update > Select
   Finish
