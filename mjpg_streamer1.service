@@ -3,7 +3,7 @@ Description=A server for streaming Motion-JPEG from a video capture device
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/mjpg_streamer -i 'input_uvc.so -f 30 -r 1280x720 -d /dev/video0 -n -q 100' -o 'output_http.so -p 8080'
+ExecStart=/usr/local/bin/mjpg_streamer -i 'input_uvc.so -f 30 -r 1280x720 -d /dev/video0 -n -q 100' -o 'output_http.so -p 8080' -o 'output_motion.so --foreground-diff-threshold 35 --background-learning-rate 0.01 --motion-noise-threshold 0.002'
 
 [Install]
 WantedBy=multi-user.target
