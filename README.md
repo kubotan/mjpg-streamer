@@ -10,7 +10,8 @@ Fork of http://sourceforge.net/projects/mjpg-streamer/
 パスワード:raspberry
 sudo su -
 raspi-config
-  2 Network Options > Select > N1 Hostname > OK > mjpg-streamer > OK
+  2 Network Options > Select > N1 Hostname > Select > mjpg-streamer > OK
+  2 Network Options > Select > N2 Wireless LAN > Select > JP Japan > OK > OK > (SSID) > OK > (Passphrase) > OK
   4 Localisation Options > Select > I2 Change Timezone > Asia > OK > Tokyo > OK
   5 Interfacing Options > Select > P2 SSH > YES > OK
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
