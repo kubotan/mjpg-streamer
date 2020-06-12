@@ -23,6 +23,8 @@ raspi-config
   4 Localisation Options > Select > I2 Change Timezone > Asia > OK > Tokyo > OK
   5 Interfacing Options > Select > P2 SSH > YES > OK
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
+  5 Interfacing Options > Select > P1 Camera > Select > Yes > Ok
+  (フレキシブルフラットケーブルのCSI接続をする場合のみ。USBカメラでは不要)
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 vi /etc/dhcpcd.conf
 interface eth0(Wi-Fiを使う場合はwlan0)
