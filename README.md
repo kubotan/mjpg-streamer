@@ -1,6 +1,9 @@
 コンパクト版mjpg-streamer
+
 Fork of http://sourceforge.net/projects/mjpg-streamer/
+
 追加プラグイン output_motion https://github.com/jacksonliam/mjpg-streamer/pull/129/files
+
 # raspbian関連ナレッジ
 ```
 ユーザー名:pi
