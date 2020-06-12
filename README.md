@@ -15,6 +15,8 @@ sudo su -
 echo "set nocompatible" >> ~/.vimrc
 echo "set backspace=indent,eol,start" >> ~/.vimrc
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
+exit
+sudo su -
 raspi-config
   2 Network Options > Select > N1 Hostname > Select > mjpg-streamer > OK
   2 Network Options > Select > N2 Wireless LAN > Select > JP Japan > OK > OK > (SSID) > OK > (Passphrase) > OK
