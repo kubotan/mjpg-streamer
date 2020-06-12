@@ -26,8 +26,12 @@ shutdown -h now
 ssh pi@XXX.XXX.XXX.XXX
 ユーザー名:pi
 パスワード:raspberry
+echo "set nocompatible" >> ~/.vimrc
+echo "set backspace=indent,eol,start" >> ~/.vimrc
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 sudo su -
+echo "set nocompatible" >> ~/.vimrc
+echo "set backspace=indent,eol,start" >> ~/.vimrc
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 raspi-config
   8 Update > Select
@@ -39,15 +43,7 @@ raspi-config
 ssh pi@XXX.XXX.XXX.XXX
 ユーザー名:pi
 パスワード:raspberry
-echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
-echo "set nocompatible" >> ~/.vimrc
-echo "set backspace=indent,eol,start" >> ~/.vimrc
 sudo su -
-echo "127.0.1.1       mjpg-streamer" >> /etc/hosts
-echo "mjpg-streamer" > /etc/hostname
-echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
-echo "set nocompatible" >> ~/.vimrc
-echo "set backspace=indent,eol,start" >> ~/.vimrc
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh setup.sh   # 2台セットアップになってます。1台にする場合はechoから始まる行で8081ポートの方を行削除してみてください。
