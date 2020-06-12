@@ -47,6 +47,7 @@ ssh pi@XXX.XXX.XXX.XXX
 ユーザー名:pi
 パスワード:raspberry
 sudo su -
+apt-get install git
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
 cd mjpg-streamer
 sh setup.sh   # 1台セットアップになってます。2台にする場合はコメントアウトされたecho行を有効化してください。
