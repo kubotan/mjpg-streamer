@@ -81,14 +81,48 @@ v4l2-ctl -d /dev/video0 --list-formats-ext
  オプション
  -b バックグラウンドで起動
  -i 入力修飾子を指定
-   -d デバイス
-   -r 解像度(QSIF/QCIF/CGA/QVGA/CIF/VGA/SVGA/XGA/SXGA or 横幅x縦幅)
-   -f fps
-   -y YUYVフォーマットを指定するか否か
-   -q JPEGのクオリティ(1-100)
-   -m 最小サイズ。ゴミフレーム除外用
-   -n dynctrlsを初期化しない
-   -l LEDの状態。(on/off/blink/auto)
+ [-d | --device ].......: video device to open (your camera)
+ [-r | --resolution ]...: the resolution of the video device,
+                          can be one of the following strings:
+                          QQVGA QCIF CGA QVGA CIF PAL
+                          VGA SVGA XGA HD SXGA UXGA
+                          FHD
+                          or a custom value like the following
+                          example: 640x480
+ [-f | --fps ]..........: frames per second
+                          (activates YUYV format, disables MJPEG)
+ [-q | --quality ] .....: set quality of JPEG encoding
+ [-m | --minimum_size ].: drop frames smaller then this limit, useful
+                          if the webcam produces small-sized garbage frames
+                          may happen under low light conditions
+ [-e | --every_frame ]..: drop all frames except numbered
+ [-n | --no_dynctrl ]...: do not initalize dynctrls of Linux-UVC driver
+ [-l | --led ]..........: switch the LED "on", "off", let it "blink" or leave
+                          it up to the driver using the value "auto"
+ [-t | --tvnorm ] ......: set TV-Norm pal, ntsc or secam
+ [-u | --uyvy ] ........: Use UYVY format, default: MJPEG (uses more cpu power)
+ [-y | --yuv  ] ........: Use YUV format, default: MJPEG (uses more cpu power)
+ [-fourcc ] ............: Use FOURCC codec 'argopt',
+                          currently supported codecs are: RGBP
+ ---------------------------------------------------------------
+
+ Optional parameters (may not be supported by all cameras):
+
+ [-br ].................: Set image brightness (auto or integer)
+ [-co ].................: Set image contrast (integer)
+ [-sh ].................: Set image sharpness (integer)
+ [-sa ].................: Set image saturation (integer)
+ [-cb ].................: Set color balance (auto or integer)
+ [-wb ].................: Set white balance (auto or integer)
+ [-ex ].................: Set exposure (auto, shutter-priority, aperature-priority, or integer)
+ [-bk ].................: Set backlight compensation (integer)
+ [-rot ]................: Set image rotation (0-359)
+ [-hf ].................: Set horizontal flip (true/false)
+ [-vf ].................: Set vertical flip (true/false)
+ [-pl ].................: Set power line filter (disabled, 50hz, 60hz, auto)
+ [-gain ]...............: Set gain (auto or integer)
+ [-cagc ]...............: Set chroma gain control (auto or integer)
+ ---------------------------------------------------------------
  
  -o 出力修飾子を指定
    -p ポート
