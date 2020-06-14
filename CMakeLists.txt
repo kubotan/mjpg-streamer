@@ -63,7 +63,6 @@ add_subdirectory(plugins/input_uvc)
 #
 
 add_subdirectory(plugins/output_http)
-add_subdirectory(plugins/output_motion)
 
 #
 # mjpg_streamer executable
