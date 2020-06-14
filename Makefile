@@ -15,7 +15,6 @@ CMAKE_BUILD_TYPE ?= Release
 	
 all:
 	[ -d _build ] || mkdir _build
-	[ -d _build ] || mkdir -p /var/log/mjpg-streamer
 	[ -f _build/Makefile ] || (cd _build && cmake  -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE) ..)
 	make -C _build
 	
