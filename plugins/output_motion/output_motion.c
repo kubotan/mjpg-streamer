@@ -82,6 +82,8 @@ static int dump_motion_frames = 0;
 static double *frame_back = NULL;
 // image for analysis
 static unsigned char *frame_gray = NULL;
+// motion status
+static unsigned char *status_file = "/var/log/output_motion_status";
 
 // maintain frame timeline
 #define FRAME_TIMELINE  32
@@ -135,28 +137,7 @@ static ssize_t full_write(int fd, const void *buf, size_t len)
     return total;
 }
 
-static void frame_dump(FILE *fp, void *buf, size_t len)
-{
-    if (fp) {
-        // TODO: ensure write is full!
-        if (1 != fwrite(buf, len, 1, fp)) {
-            perror("FRAME_DUMP: ");
-            if (EPIPE == errno) {
-                // FIXME: TODO: down the process?
-            }
-        }
-        fflush(fp);
-    }
-    // dump frame to stdout
-    if (dump_motion_frames) {
-        if (full_write(1, buf, len) < 0) {
-            perror("FULLWRITE: ");
-        }
-    }
-}
-
 static FILE *writer = NULL;
-static char fname[1024];
 
 /******************************************************************************
 Description.: print a help message
@@ -178,6 +159,7 @@ void help(void)
         " [--motion-noise-threshold ]......: motion probability noise threshold. Default: %.3f\n\n" \
         " [--motion-start-duration ].......: time with motion to report motion started. Default: %.1f\n\n" \
         " [--motion-stop-duration ]........: time without motion to report motion stopped. Default: %.1f\n\n" \
+        " [--status_file ].................: status file path.\n\n" \
         " [--dump-motion-frames ]..........: dump motion frames to stdout.\n\n" \
         " ---------------------------------------------------------------\n",
         scale_num, scale_denom, foreground_diff_threshold,
@@ -228,6 +210,13 @@ void *worker_thread(void *arg)
     static int max_frame_size;
     unsigned char *tmp_framebuffer = NULL;
     char buf[4096];
+    FILE *fp_status_file;
+
+    fp_status_file = fopen(status_file, "w");
+    if( fp_status_file == NULL ) {
+       perror("Error open status file\n");
+       return NULL;
+    }
 
     /* set cleanup handler to cleanup allocated resources */
     pthread_cleanup_push(worker_cleanup, NULL);
@@ -403,45 +392,13 @@ void *worker_thread(void *arg)
 
         // not in motion?
         static int alarm_status = 0;
-        static int need_report_status = 1;
         if (!alarm_status) {
             // last M frames with non-zero motion probability?
             if (diff_all(motion_start_duration * fps)) {
                 // alarm on
                 alarm_status = 1;
-                need_report_status = 1;
-                // compose storage basename
-                struct tm *ts = localtime(&now);
-                strftime(fname, sizeof(fname), "%Y-%m-%d/%H-%M-%S", ts);
-                // determine scene change factor
-                double scene_change = 0.015;
-                if (max_motion_probability < 0.03) {
-                    scene_change = 0.1 * max_motion_probability;
-                }
-                if (scene_change < 0.003) {
-                    scene_change = 0.003;
-                }
-                // start writer
-                snprintf(buf, sizeof(buf),
-                    "exec sh action.sh record %s %.3f %.3f",
-                    fname, scene_change, fps
-                );
-                writer = popen(buf, "w");
-                setvbuf(writer, NULL, _IONBF, 0); // FIXME: TODO: validate need
-                if (!writer) {
-                    perror("WRITER: ");
-                }
-                // write pre-motion frames
-                int pre_motion_frames = motion_start_duration * fps + 1.5;
-                if (pre_motion_frames > FRAME_TIMELINE) {
-                    pre_motion_frames = FRAME_TIMELINE;
-                }
-                for (int i = pre_motion_frames; --i >= 0;) {
-                    struct frame_s *f = &frame_timeline[i];
-                    if (f->buf && f->len) {
-                        frame_dump(writer, f->buf, f->len);
-                    }
-                }
+                fputs("IN MOTION", fp_status_file);
+                fflush(fp_status_file);
             }
         // in motion
         } else {
@@ -449,40 +406,14 @@ void *worker_thread(void *arg)
             if (!diff_any(motion_stop_duration * fps)) {
                 // alarm off
                 alarm_status = 0;
-                need_report_status = 1;
-                // stop writer
-                if (writer) {
-                    pclose(writer);
-                    writer = NULL;
-                }
                 // reset motion probability
                 max_motion_probability = 0.0;
+                truncate(status_file, 0);
             }
-        }
-
-        // report state
-        if (need_report_status) {
-            need_report_status = 0;
-            // run alarm helper
-            snprintf(buf, sizeof(buf),
-                "exec sh action.sh alarm %d %.3f %.3f",
-                alarm_status, motion_probability, fps
-            );
-            int rc = system(buf);
-        }
-
-        // write frame
-        if (alarm_status) {
-            frame_dump(writer, frame, frame_size);
         }
 
         // maintain frame timeline
         frame_append(frame, frame_size);
-
-        // // if not in motion skip the frame but pass each hundred-th one
-        // int need_image = alarm_status || (0 == (frame_idx % 100));
-        // if (need_image) {
-        // }
 
         // update frame rate
         ++frame_idx;
@@ -491,7 +422,7 @@ void *worker_thread(void *arg)
         // -----------------------------------------------------------
 
     }
-
+    fclose(fp_status_file);
     // -----------------------------------------------------------
 
     /* cleanup now */
@@ -533,6 +464,7 @@ int output_init(output_parameter *param)
             {"motion-noise-threshold", required_argument, 0, 0},
             {"motion-start-duration", required_argument, 0, 0},
             {"motion-stop-duration", required_argument, 0, 0},
+            {"status_file", required_argument, 0, 0},
             {"dump-motion-frames", no_argument, 0, 0},
             {0, 0, 0, 0}
         };
@@ -593,8 +525,12 @@ int output_init(output_parameter *param)
         case 10:
             motion_stop_duration = atof(optarg);
             break;
-        /* dump-motion-frames */
+        /* status_file */
         case 11:
+            status_file = strdup(optarg);
+            break;
+        /* dump-motion-frames */
+        case 12:
             dump_motion_frames = 1;
             break;
         }
@@ -641,6 +577,10 @@ int output_init(output_parameter *param)
     OPRINT(
         "time without motion to report motion stopped.: %.1f\n",
         motion_stop_duration
+    );
+    OPRINT(
+        "status file..................................: %s\n",
+        status_file
     );
     OPRINT(
         "dump motion frames to stdout.................: %d\n",
