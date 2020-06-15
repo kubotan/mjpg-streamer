@@ -87,6 +87,8 @@ int xioctl(int fd, int IOCTL_X, void *arg)
 }
 
 static int init_v4l2(struct vdIn *vd);
+static int init_framebuffer(struct vdIn *vd);
+static void free_framebuffer(struct vdIn *vd);
 
 int init_videoIn(struct vdIn *vd, char *device, int width,
                  int height, int fps, int format, int grabmethod, globals *pglobal, int id, v4l2_std_id vstd)
@@ -114,9 +116,9 @@ int init_videoIn(struct vdIn *vd, char *device, int width,
 	vd->vstd = vstd;
     vd->grabmethod = grabmethod;
     vd->soft_framedrop = 0;
+
     if(init_v4l2(vd) < 0) {
-        fprintf(stderr, " Init v4L2 failed !! exit fatal \n");
-        goto error;;
+        goto error;
     }
 
     // getting the name of the input source
@@ -210,44 +212,59 @@ int init_videoIn(struct vdIn *vd, char *device, int width,
         }
     }
 
-    /* alloc a temp buffer to reconstruct the pict */
-    vd->framesizeIn = (vd->width * vd->height << 1);
-    switch(vd->formatIn) {
-    case V4L2_PIX_FMT_JPEG:
-        // Fall-through intentional
-    case V4L2_PIX_FMT_MJPEG: // in JPG mode the frame size is varies at every frame, so we allocate a bit bigger buffer
-        vd->tmpbuffer = (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
-        if(!vd->tmpbuffer)
-            goto error;
-        vd->framebuffer =
-            (unsigned char *) calloc(1, (size_t) vd->width * (vd->height + 8) * 2);
-        break;
-    case V4L2_PIX_FMT_RGB565: // buffer allocation for non varies on frame size formats
-    case V4L2_PIX_FMT_YUYV:
-    case V4L2_PIX_FMT_UYVY:
-        vd->framebuffer =
-            (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
-        break;
-        vd->framebuffer =
-            (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
-        break;
-    default:
-        fprintf(stderr, " should never arrive exit fatal !!\n");
+    if (init_framebuffer(vd) < 0) {
         goto error;
-        break;
-
     }
 
-    if(!vd->framebuffer)
-        goto error;
     return 0;
 error:
+    free_framebuffer(vd);
     free(pglobal->in[id].in_parameters);
     free(vd->videodevice);
     free(vd->status);
     free(vd->pictName);
     CLOSE_VIDEO(vd->fd);
     return -1;
+}
+
+static int init_framebuffer(struct vdIn *vd) {
+    /* alloc a temp buffer to reconstruct the pict */
+    vd->framesizeIn = (vd->width * vd->height << 1);
+    switch (vd->formatIn) {
+        case V4L2_PIX_FMT_JPEG:
+            // Fall-through intentional
+        case V4L2_PIX_FMT_MJPEG: // in JPG mode the frame size is varies at every frame, so we allocate a bit bigger buffer
+            vd->tmpbuffer = (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
+            if(!vd->tmpbuffer)
+                return -1;
+            vd->framebuffer =
+                (unsigned char *) calloc(1, (size_t) vd->width * (vd->height + 8) * 2);
+            break;
+        case V4L2_PIX_FMT_RGB24:
+            vd->framesizeIn = (vd->width * vd->height) * 3;
+            vd->framebuffer =
+                (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
+            break;
+        case V4L2_PIX_FMT_RGB565: // buffer allocation for non varies on frame size formats
+        case V4L2_PIX_FMT_YUYV:
+        case V4L2_PIX_FMT_UYVY:
+            vd->framebuffer =
+                (unsigned char *) calloc(1, (size_t) vd->framesizeIn);
+            break;
+        default:
+            fprintf(stderr, "Unknown vd->formatIn\n");
+            return -1;
+    }
+    return -!vd->framebuffer;
+}
+
+static void free_framebuffer(struct vdIn *vd) {
+    if (vd->tmpbuffer) {
+        free(vd->tmpbuffer);
+    }
+    vd->tmpbuffer = NULL;
+    free(vd->framebuffer);
+    vd->framebuffer = NULL;
 }
 
 static int init_v4l2(struct vdIn *vd)
@@ -289,6 +306,19 @@ static int init_v4l2(struct vdIn *vd)
         if (ioctl(vd->fd, VIDIOC_S_STD, &vd->vstd) == -1) {
             fprintf(stderr, "Can't set video standard: %s\n",strerror(errno));
             goto fatal;
+        }
+    }
+
+    if (vd->dv_timings) {
+        if (video_set_dv_timings(vd)) {
+            goto fatal;
+        }
+
+        struct v4l2_event_subscription sub;
+        memset(&sub, 0, sizeof(sub));
+        sub.type = V4L2_EVENT_SOURCE_CHANGE;
+        if (ioctl(vd->fd, VIDIOC_SUBSCRIBE_EVENT, &sub) < 0) {
+            IPRINT("Can\'t subscribe to V4L2_EVENT_SOURCE_CHANGE: %s\n", strerror(errno));
         }
     }
 
@@ -342,8 +372,12 @@ static int init_v4l2(struct vdIn *vd)
 	fprintf(stderr, "    ... Falling back to UYVY mode (consider using -uyvy option). Note that this requires much more CPU power\n");
 	vd->formatIn = vd->fmt.fmt.pix.pixelformat;
         break;
+      case V4L2_PIX_FMT_RGB24:
+	fprintf(stderr, "    ... Falling back to RGB24 mode (consider using -fourcc RGB24 option). Note that this requires much more CPU power\n");
+	vd->formatIn = vd->fmt.fmt.pix.pixelformat;
+	break;
       case V4L2_PIX_FMT_RGB565:
-	fprintf(stderr, "    ... Falling back to RGB565 mode (consider using -fourcc option). Note that this requires much more CPU power\n");
+	fprintf(stderr, "    ... Falling back to RGB565 mode (consider using -fourcc RGBP option). Note that this requires much more CPU power\n");
 	vd->formatIn = vd->fmt.fmt.pix.pixelformat;
 	break;
       default:
@@ -379,23 +413,6 @@ static int init_v4l2(struct vdIn *vd)
                 } else {
                     if (vd->fps != setfps->parm.capture.timeperframe.denominator) {
                         IPRINT("FPS coerced ......: from %d to %d\n", vd->fps, setfps->parm.capture.timeperframe.denominator);
-                    }
-
-                    // if we selecting lower FPS than the allowed then we will use software framedropping
-                    if (vd->fps < setfps->parm.capture.timeperframe.denominator) {
-                        vd->soft_framedrop = 1;
-                        vd->frame_period_time = 1000/vd->fps; // calcualate frame period time in ms
-                        IPRINT("Frame period time ......: %ld ms\n", vd->frame_period_time);
-
-                        // set FPS to maximum in order to minimize the lagging
-                        memset(setfps, 0, sizeof(struct v4l2_streamparm));
-                        setfps->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                        setfps->parm.capture.timeperframe.numerator = 1;
-                        setfps->parm.capture.timeperframe.denominator = 255;
-                        ret = xioctl(vd->fd, VIDIOC_S_PARM, setfps);
-                        if (ret) {
-                            perror("Unable to set the FPS\n");
-                        }
                     }
                 }
             } else {
@@ -467,11 +484,12 @@ static int init_v4l2(struct vdIn *vd)
     }
     return 0;
 fatal:
+    fprintf(stderr, "Init v4L2 failed !! exit fatal\n");
     return -1;
 
 }
 
-static int video_enable(struct vdIn *vd)
+int video_enable(struct vdIn *vd)
 {
     int type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     int ret;
@@ -497,6 +515,54 @@ static int video_disable(struct vdIn *vd, streaming_state disabledState)
     }
     DBG("STopping capture done\n");
     vd->streamingState = disabledState;
+    return 0;
+}
+
+int video_set_dv_timings(struct vdIn *vd)
+{
+    struct v4l2_dv_timings timings;
+    v4l2_std_id std;
+
+    memset(&timings, 0, sizeof(timings));
+    if (xioctl(vd->fd, VIDIOC_QUERY_DV_TIMINGS, &timings) >= 0) {
+        IPRINT("QUERY_DV_TIMINGS returned %ux%u pixclk %llu\n", timings.bt.width, timings.bt.height, timings.bt.pixelclock);
+        // Can read DV timings, so set them.
+        if (xioctl(vd->fd, VIDIOC_S_DV_TIMINGS, &timings) < 0) {
+            perror("Failed to set DV timings");
+            return -1;
+        } else {
+            vd->width = timings.bt.width;
+            vd->height = timings.bt.height;
+        }
+    } else {
+        memset(&std, 0, sizeof(std));
+        if (xioctl(vd->fd, VIDIOC_QUERYSTD, &std) >= 0) {
+            // Can read standard, so set it.
+            if (xioctl(vd->fd, VIDIOC_S_STD, &std) < 0) {
+                perror("Failed to set standard");
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+int video_handle_event(struct vdIn *vd)
+{
+    struct v4l2_event ev;
+    if (!ioctl(vd->fd, VIDIOC_DQEVENT, &ev)) {
+        switch (ev.type) {
+            case V4L2_EVENT_SOURCE_CHANGE:
+                IPRINT("V4L2_EVENT_SOURCE_CHANGE: Source changed\n");
+                if (setResolution(vd, vd->width, vd->height) < 0) {
+                    return -1;
+                }
+                break;
+            case V4L2_EVENT_EOS:
+                IPRINT("V4L2_EVENT_EOS\n");
+                break;
+        }
+    }
     return 0;
 }
 
@@ -589,18 +655,22 @@ int uvcGrab(struct vdIn *vd)
         vd->tmpbytesused = vd->buf.bytesused;
         vd->tmptimestamp = vd->buf.timestamp;
 
-        if(debug)
+        if(debug) {
             fprintf(stderr, "bytes in used %d \n", vd->buf.bytesused);
+        }
         break;
+    case V4L2_PIX_FMT_RGB24:
     case V4L2_PIX_FMT_RGB565:
     case V4L2_PIX_FMT_YUYV:
     case V4L2_PIX_FMT_UYVY:
-        if(vd->buf.bytesused > vd->framesizeIn)
+        if(vd->buf.bytesused > vd->framesizeIn) {
             memcpy(vd->framebuffer, vd->mem[vd->buf.index], (size_t) vd->framesizeIn);
-        else
+        } else {
             memcpy(vd->framebuffer, vd->mem[vd->buf.index], (size_t) vd->buf.bytesused);
+        }
+        vd->tmpbytesused = vd->buf.bytesused;
+        vd->tmptimestamp = vd->buf.timestamp;
         break;
-
     default:
         goto err;
         break;
@@ -623,11 +693,7 @@ int close_v4l2(struct vdIn *vd)
 {
     if(vd->streamingState == STREAMING_ON)
         video_disable(vd, STREAMING_OFF);
-    if(vd->tmpbuffer)
-        free(vd->tmpbuffer);
-    vd->tmpbuffer = NULL;
-    free(vd->framebuffer);
-    vd->framebuffer = NULL;
+    free_framebuffer(vd);
     free(vd->videodevice);
     free(vd->status);
     free(vd->pictName);
@@ -903,35 +969,41 @@ void control_readed(struct vdIn *vd, struct v4l2_queryctrl *ctrl, globals *pglob
 */
 int setResolution(struct vdIn *vd, int width, int height)
 {
-    int ret;
-    DBG("setResolution(%d, %d)\n", width, height);
-
     vd->streamingState = STREAMING_PAUSED;
-    if(video_disable(vd, STREAMING_PAUSED) == 0) {  // do streamoff
-        DBG("Unmap buffers\n");
-        int i;
-        for(i = 0; i < NB_BUFFER; i++)
-            munmap(vd->mem[i], vd->buf.length);
-
-        if(CLOSE_VIDEO(vd->fd) == 0) {
-            DBG("Device closed successfully\n");
-        }
-
-        vd->width = width;
-        vd->height = height;
-        if(init_v4l2(vd) < 0) {
-            fprintf(stderr, " Init v4L2 failed !! exit fatal \n");
-            return -1;
-        } else {
-            DBG("reinit done\n");
-            video_enable(vd);
-            return 0;
-        }
-    } else {
-        DBG("Unable to disable streaming\n");
+    if (video_disable(vd, STREAMING_PAUSED) < 0) {
+        IPRINT("Unable to disable streaming\n");
         return -1;
     }
-    return ret;
+
+    DBG("Unmap buffers\n");
+    int i;
+    for (i = 0; i < NB_BUFFER; i++) {
+        munmap(vd->mem[i], vd->buf.length);
+    }
+
+    if (CLOSE_VIDEO(vd->fd) == 0) {
+        DBG("Device closed successfully\n");
+    }
+
+    vd->width = width;
+    vd->height = height;
+    if (init_v4l2(vd) < 0) {
+        return -1;
+    }
+
+    free_framebuffer(vd);
+    if (init_framebuffer(vd) < 0) {
+        IPRINT("Can\'t reallocate framebuffer\n");
+        return -1;
+    }
+
+    DBG("Resolution changed to %dx%d , enabling the video...\n", width, height);
+    if (video_enable(vd) < 0) {
+        IPRINT("Can\'t RE-enable the video after setResolution(%dx%d)", width, height);
+        return -1;
+    }
+
+    return 0;
 }
 
 /*
