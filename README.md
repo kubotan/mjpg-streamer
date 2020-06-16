@@ -40,21 +40,14 @@ raspi-config
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
   5 Interfacing Options > Select > P1 Camera > Select > Yes > Ok
   (フレキシブルフラットケーブルのCSI接続をする場合のみ。USBカメラでは不要)
-cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
-vi /etc/dhcpcd.conf
-interface eth0(Wi-Fiを使う場合はwlan0)
-static ip_address=XXX.XXX.XXX.XXX/24
-static routers=XXX.XXX.XXX.XXX
-static domain_name_servers=XXX.XXX.XXX.XXX XXX.XXX.XXX.XXX
-reboot
-
-ssh -p 22 pi@mjpg-streamer1.local
-ユーザー名:pi
-パスワード:raspberry
-sudo su -
-raspi-config
   8 Update > Select
   Finish
+cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
+echo "" >> /etc/dhcpcd.conf
+echo "interface eth0" >> /etc/dhcpcd.conf  # Wi-Fiを使う場合はwlan0
+echo "static ip_address=XXX.XXX.XXX.XXX/24" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
+echo "static routers=XXX.XXX.XXX.XXX" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
+echo "static domain_name_servers=XXX.XXX.XXX.XXX" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
 reboot
 ```
 
