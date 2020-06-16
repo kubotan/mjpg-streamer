@@ -48,18 +48,7 @@ echo "interface eth0" >> /etc/dhcpcd.conf  # Wi-Fiを使う場合はwlan0
 echo "static ip_address=XXX.XXX.XXX.XXX/24" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
 echo "static routers=XXX.XXX.XXX.XXX" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
 echo "static domain_name_servers=XXX.XXX.XXX.XXX" >> /etc/dhcpcd.conf  # XXX部分は任意の数値を指定
-reboot
-```
-
-# セットアップ
-```
-ssh -p 22 pi@mjpg-streamer1.local
-sudo su -
-apt-get install git
-git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
-cd mjpg-streamer
-sh setup.sh   # 1台セットアップになってます。2台にする場合はコメントアウトされたecho行を有効化してください。
-reboot
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/kubotan/mjpg-streamer/master/setup.sh)"  # setup and reboot
 ```
 
 #以下でmjpgストリーミングの確認可能
