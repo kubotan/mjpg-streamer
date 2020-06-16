@@ -40,7 +40,7 @@ raspi-config
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
   5 Interfacing Options > Select > P1 Camera > Select > Yes > Ok
   (フレキシブルフラットケーブルのCSI接続をする場合のみ。USBカメラでは不要)
-  8 Update > Select
+  8 Update
   Finish
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 echo "" >> /etc/dhcpcd.conf
