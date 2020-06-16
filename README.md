@@ -2,10 +2,27 @@
 
 Fork of http://sourceforge.net/projects/mjpg-streamer/
 
-# raspbian関連ナレッジ
+-----
+# Rapid Setup
+
+## Download Raspberry Pi Imager
+https://www.raspberrypi.org/downloads/
+1. Raspberry Pi Imagerをダウンロードする
+2. Raspberry Pi Imagerをインストールして、Windowsの場合はアイコンを右クリックして、「管理者として実行」を選択して、実行する
+3. 「Operating System」から「ERASE」を選択し、SDカードを選択して、「WRITE」ボタンを押す
+
+## Write image file.
+https://www.raspberrypi.org/downloads/raspberry-pi-os/
+1. 「Raspberry Pi OS (32-bit) Lite」の「Download ZIP」ボタンを押してダウンロードする。
+2. 「Operating System」から「Use custom」 > 「2020-05-27-raspios-buster-lite-armhf.zip」を選択し、SDカードを選択して、「WRITE」ボタンを押す
+
+## Build
+- ユーザー名:pi
+- パスワード:raspberry
+- ヘッドレスセットアップを行う為、sdカードの直下にsshという名前の空ファイルを作成する
+
 ```
-ユーザー名:pi
-パスワード:raspberry
+ssh -p 22 pi@raspberrypi.local
 echo "set nocompatible" >> ~/.vimrc
 echo "set backspace=indent,eol,start" >> ~/.vimrc
 echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
@@ -16,7 +33,7 @@ echo "alias ll='ls -la --color=auto'" >> ~/.bashrc
 exit
 sudo su -
 raspi-config
-  2 Network Options > Select > N1 Hostname > Select > mjpg-streamer > OK
+  2 Network Options > Select > N1 Hostname > Select > mjpg-streamer1 > OK
   2 Network Options > Select > N2 Wireless LAN > Select > JP Japan > OK > OK > (SSID) > OK > (Passphrase) > OK
   4 Localisation Options > Select > I2 Change Timezone > Asia > OK > Tokyo > OK
   5 Interfacing Options > Select > P2 SSH > YES > OK
@@ -31,7 +48,7 @@ static routers=XXX.XXX.XXX.XXX
 static domain_name_servers=XXX.XXX.XXX.XXX XXX.XXX.XXX.XXX
 reboot
 
-ssh pi@XXX.XXX.XXX.XXX
+ssh -p 22 pi@mjpg-streamer1.local
 ユーザー名:pi
 パスワード:raspberry
 sudo su -
@@ -43,9 +60,7 @@ reboot
 
 # セットアップ
 ```
-ssh pi@XXX.XXX.XXX.XXX
-ユーザー名:pi
-パスワード:raspberry
+ssh -p 22 pi@mjpg-streamer1.local
 sudo su -
 apt-get install git
 git clone https://github.com/kubotan/mjpg-streamer ./mjpg-streamer
@@ -56,25 +71,25 @@ reboot
 
 #以下でmjpgストリーミングの確認可能
 ```
-http://mjpg-streamer.local:8080/?action=stream
-2台目はhttp://mjpg-streamer.local:8081/?action=stream
+http://mjpg-streamer1.local:8080/?action=stream
+2台目はhttp://mjpg-streamer1.local:8081/?action=stream
 ```
 
 # ナレッジ
 ```
 #USB接続確認
-lsusb 
+$ lsusb 
 #ツールのインストール
-sudo apt-get install v4l-utils
+$ sudo apt-get install v4l-utils
 #デバイス情報の表示
-v4l2-ctl -d /dev/video0 --info
+$ v4l2-ctl -d /dev/video0 --info
 #より詳細な情報表示
-v4l2-ctl -d /dev/video0 --all
+$ v4l2-ctl -d /dev/video0 --all
 #対応している解像度とフレームレート一覧表示
-v4l2-ctl -d /dev/video0 --list-formats-ext
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
 #オプション
- ./mjpg_streamer -i "input_uvc.so --help"
- ./mjpg_streamer -o "output_http.so --help"
+$ ./mjpg_streamer -i "input_uvc.so --help"
+$ ./mjpg_streamer -o "output_http.so --help"
  
  オプション
  -b バックグラウンドで起動
