@@ -64,7 +64,7 @@ $ lsusb
 #ツールのインストール
 $ sudo apt-get install v4l-utils
 #デバイス一覧の表示
-$ v4l2-ctl  --list-devices
+$ v4l2-ctl --list-devices
 #デバイス情報の表示
 $ v4l2-ctl -d /dev/video0 --info
 #より詳細な情報表示
