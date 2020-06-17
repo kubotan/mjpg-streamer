@@ -40,7 +40,7 @@ raspi-config
   (Wi-Fiを使う場合はここで有効にするがfpsが下がるので有線とした。)
   5 Interfacing Options > Select > P1 Camera > Select > Yes > Ok
   (フレキシブルフラットケーブルのCSI接続をする場合のみ。USBカメラでは不要)
-  8 Update
+  8 Update > Select
   Finish
 cp -p /etc/dhcpcd.conf /etc/dhcpcd.conf.org
 echo "" >> /etc/dhcpcd.conf
@@ -63,6 +63,8 @@ http://mjpg-streamer1.local:8080/?action=stream
 $ lsusb 
 #ツールのインストール
 $ sudo apt-get install v4l-utils
+#デバイス一覧の表示
+$ v4l2-ctl  --list-devices
 #デバイス情報の表示
 $ v4l2-ctl -d /dev/video0 --info
 #より詳細な情報表示
