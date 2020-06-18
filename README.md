@@ -71,6 +71,10 @@ $ v4l2-ctl -d /dev/video0 --info
 $ v4l2-ctl -d /dev/video0 --all
 #対応している解像度とフレームレート一覧表示
 $ v4l2-ctl -d /dev/video0 --list-formats-ext
+#コントロール一覧を表示
+$ v4l2-ctl -d /dev/video0 --list-ctrls-menu
+#コントロールを実行
+$ v4l2-ctl -d /dev/video0 -c exposure_auto=1
 #オプション
 $ ./mjpg_streamer -i "input_uvc.so --help"
 $ ./mjpg_streamer -o "output_http.so --help"
