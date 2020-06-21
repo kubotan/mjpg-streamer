@@ -59,6 +59,8 @@ http://mjpg-streamer1.local:8080/?action=stream
 
 # ナレッジ
 ```
+# デバッグビルド
+$ make CMAKE_BUILD_TYPE=Debug
 #USB接続確認
 $ lsusb 
 #ツールのインストール
