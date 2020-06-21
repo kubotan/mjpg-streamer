@@ -56,8 +56,9 @@ find_library(JPEG_LIB jpeg)
 # Input plugins
 #
 
+add_subdirectory(plugins/input_file)
+add_subdirectory(plugins/input_http)
 add_subdirectory(plugins/input_uvc)
-add_subdirectory(plugins/input_raspicam)
 
 #
 # Output plugins
