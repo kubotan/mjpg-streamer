@@ -57,12 +57,15 @@ find_library(JPEG_LIB jpeg)
 #
 
 add_subdirectory(plugins/input_uvc)
+add_subdirectory(plugins/input_raspicam)
 
 #
 # Output plugins
 #
 
+add_subdirectory(plugins/output_file)
 add_subdirectory(plugins/output_http)
+add_subdirectory(plugins/output_rtsp)
 
 #
 # mjpg_streamer executable
