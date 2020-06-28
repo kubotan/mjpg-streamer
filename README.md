@@ -80,10 +80,6 @@ $ v4l2-ctl -d /dev/video0 -c exposure_auto=1
 #オプション
 $ ./mjpg_streamer -i "input_uvc.so --help"
 $ ./mjpg_streamer -o "output_http.so --help"
-#minimum_size test
-$ Quality=0.8;echo $((640*480*(24/8))) $Quality | awk '{print $1 * $2}' | xargs printf "%.0f\n"   # 737280
-$ Quality=1.0;echo $((640*480*(24/8))) $Quality | awk '{print $1 * $2}' | xargs printf "%.0f\n"   # 921600
-$ Quality=1.0;echo $((1920*1080*(24/8))) $Quality | awk '{print $1 * $2}' | xargs printf "%.0f\n"   # 6220800
 
  オプション
  -b バックグラウンドで起動
